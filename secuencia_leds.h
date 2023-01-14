@@ -17,6 +17,8 @@ void explosion();
 void random_led();
 void feliz_cumple();
 
+void cambiar_delay();
+
 void apagar_leds(int);
 
 #define N_LEDS 8

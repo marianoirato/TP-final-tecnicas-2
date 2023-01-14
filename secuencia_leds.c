@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ncurses.h>
 #include <wiringPi.h>
 #include "secuencia_leds.h"
 #include "setup.h"
@@ -274,6 +275,20 @@ void feliz_cumple()
                         retardo();
                 }
         }
+}
+
+void cambiar_delay()
+{
+	while(TRUE)
+	{
+		set_delay();
+		
+		move(5,0);      // nos movemos para luego limpiar en el lugar que queremos
+                clrtobot();     // limpiamos todo lo que esta en la linea y abajo
+                mvprintw(5, 0, "Nuevo delay: %d ms", tiempo_retardo);
+
+		retardo();
+	}
 }
 
 void apagar_leds(int NUM_LEDS)

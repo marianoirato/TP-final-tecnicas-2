@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include "secuencia_leds.h"
+#include "setup.h"
 
 #define SALIR 115
 
@@ -48,14 +49,25 @@ void crear_ventana()
 		case 8:
                         mvprintw(0, 17, "Feliz cumpleaños.");
                         break;
-                default:
+		case 9: 
+			mvprintw(0, 17, "Setear delay.");
+			break;
+		default:
                         break;
         }
-
-        mvprintw(2, 0, "Pulse la flecha hacia arriba para aumentar la velocidad (-100 ms), y la fecha hacia abajo para disminuirla (+100 ms). \n");
-        mvprintw(3, 0, "Pulse la tecla 's' para salir. \n\n");
-	// enviamos un 0 a variacio_velocidad, es decir, no varia la velocidad, por lo tanto, devuelve el delay actual
-	mvprintw(5, 0, "-Delay inicial: %d ms", variacion_velocidad(0)); 
+      
+	if(opcion != 9)
+	{
+		mvprintw(2, 0, "Pulse la flecha hacia arriba para aumentar la velocidad (-100 ms), y la fecha hacia abajo para disminuirla (+100 ms). \n");
+       		mvprintw(3, 0, "Pulse la tecla 's' para salir. \n\n");
+		// enviamos un 0 a variacio_velocidad, es decir, no varia la velocidad, por lo tanto, devuelve el delay actual
+		mvprintw(5, 0, "-Delay inicial: %d ms", variacion_velocidad(0)); 
+	}
+	else
+	{
+		mvprintw(2, 0, "Ajuste el potenciometro para cambiar el delay. \n");
+		mvprintw(3, 0, "Pulse la tecla 's' para salir. \n\n");
+	}
 }
 
 void menu()
@@ -69,7 +81,8 @@ void menu()
         printf("6: Explosion. \n");
         printf("7: Random LED. \n");
         printf("8: Feliz cumpleaños. \n");
-        
+       	printf("9: Setear delay. \n");
+
 	printf("Pulse cualquier otra tecla numérica para salir. \n");
  	// aceptamos solamente números
 	while(scanf("%d", &opcion) != 1)	// si el scanf recibe un caracter, va a devolver algo distinto de 1
@@ -107,10 +120,16 @@ void menu()
                 case 7:
                         crear_ventana();
                         random_led();
-                case 8:
+                	break;
+		case 8:
                         crear_ventana();
                         feliz_cumple();
-                default:
+			break;
+		case 9:
+			crear_ventana();
+			cambiar_delay();
+			break;
+		default:
                         exit(0);	// exit(0) es para salir del programa, sin volver a la función en la que fue llamado menu()
                         break;		// en nuestro caso, sin volver a retardo
         }
@@ -128,7 +147,7 @@ int interrupcion()
         {
                 case KEY_UP:
                         retraso = variacion_velocidad(2);
-                        move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
+			move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
                         clrtobot();     // limpiamos todo lo que esta en la linea y abajo
                         mvprintw(6, 0, "-Aumentó la velocidad 100 ms.");
                        	mvprintw(7, 0, "-Retraso: %d ms", retraso);

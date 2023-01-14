@@ -6,7 +6,7 @@ void set_delay();
 
 #define ADDRESS 0x48
 #define BASE 64
-#define A0 BASE
+#define POTE BASE + 3
 #define FACTOR_DELAY 10
 
 extern const int pinouts[];

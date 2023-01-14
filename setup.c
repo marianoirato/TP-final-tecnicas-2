@@ -23,11 +23,8 @@ void setup()
 
 void set_delay()
 {
-	tiempo_retardo = 1000;
-	/*
-	if(analogRead(A0) < 10)
+	if(analogRead(POTE) < 10)
 		tiempo_retardo = 100;
 	else
-		tiempo_retardo = analogRead(A0) * FACTOR_DELAY;
-	*/
+		tiempo_retardo = analogRead(POTE) * FACTOR_DELAY;
 }
