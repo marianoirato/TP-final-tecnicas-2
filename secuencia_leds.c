@@ -53,7 +53,7 @@ void auto_fantastico()
                 {
                         apagar_leds(TODOS);
 
-                        digitalWrite(pinouts[i], HIGH);
+                        digitalWrite(leds_pinout[i], HIGH);
 
                         retardo();
                 }
@@ -62,7 +62,7 @@ void auto_fantastico()
                 {
                         apagar_leds(TODOS);
 
-                        digitalWrite(pinouts[i], HIGH);
+                        digitalWrite(leds_pinout[i], HIGH);
 
                         retardo();
                 }
@@ -84,7 +84,7 @@ void el_choque()
                 for(int i = 0; i < 7; i++)
                 {
                         for(int j = 0; j < N_LEDS; j++)
-                                digitalWrite(pinouts[j], tabla_datos[i][j]);
+                                digitalWrite(leds_pinout[j], tabla_datos[i][j]);
 
                         retardo();
                 }
@@ -101,7 +101,7 @@ void la_apilada()
                         {
                                 apagar_leds(N_LEDS - i);
 
-                                digitalWrite(pinouts[j], HIGH);
+                                digitalWrite(leds_pinout[j], HIGH);
 
                                 retardo();
                         }
@@ -115,13 +115,13 @@ void parpadeo(int led)
 {
         for(int i = 0; i < N_PARPADEOS; i++)
         {
-                digitalWrite(pinouts[N_LEDS - led - 1], HIGH);
+                digitalWrite(leds_pinout[N_LEDS - led - 1], HIGH);
                 retardo();
-                digitalWrite(pinouts[N_LEDS - led - 1], LOW);
+                digitalWrite(leds_pinout[N_LEDS - led - 1], LOW);
                 retardo();
         }
 
-        digitalWrite(pinouts[N_LEDS - led - 1], HIGH);
+        digitalWrite(leds_pinout[N_LEDS - led - 1], HIGH);
 }
 
 void la_carrera()
@@ -150,7 +150,7 @@ void la_carrera()
                 for(int i = 0; i < 18; i++)
                 {
                         for(int j = 0; j < N_LEDS; j++)
-                                digitalWrite(pinouts[j], tabla_datos[i][j]);
+                                digitalWrite(leds_pinout[j], tabla_datos[i][j]);
 
                         retardo();
                 }
@@ -169,7 +169,7 @@ void contador_binario()
 
                         // prendemos los leds segun el valor binario
                         for (int j = 0; j < N_LEDS; j++)
-                                digitalWrite(pinouts[j], *(binario + j));
+                                digitalWrite(leds_pinout[j], *(binario + j));
 
                         retardo();
                 }
@@ -210,7 +210,7 @@ void explosion()
                 for(int i = 0; i < 7; i++)
                 {
                         for(int j = 0; j < N_LEDS; j++)
-                                digitalWrite(pinouts[j], tabla_datos[i][j]);
+                                digitalWrite(leds_pinout[j], tabla_datos[i][j]);
 
                         retardo();
                 }
@@ -227,10 +227,10 @@ void random_led()
         {
                 numero = random() % N_LEDS;                     // % N_LEDS le da el rango entre 0 y 7
 
-                if(digitalRead(pinouts[numero]) == 0)           // si el led esta apagado, lo prende
-                        digitalWrite(pinouts[numero], HIGH);
+                if(digitalRead(leds_pinout[numero]) == 0)           // si el led esta apagado, lo prende
+                        digitalWrite(leds_pinout[numero], HIGH);
                 else                                            // si el led esta prendido, lo apaga
-                        digitalWrite(pinouts[numero], LOW);
+                        digitalWrite(leds_pinout[numero], LOW);
 
                 retardo();
         }
@@ -270,7 +270,7 @@ void feliz_cumple()
                 for(int i = 0; i < 25; i++)
                 {
                         for(int j = 0; j < N_LEDS; j++)
-                                digitalWrite(pinouts[j], tabla_datos[i][j]);
+                                digitalWrite(leds_pinout[j], tabla_datos[i][j]);
 
                         retardo();
                 }
@@ -294,5 +294,5 @@ void cambiar_delay()
 void apagar_leds(int NUM_LEDS)
 {
         for(int i = 0; i < NUM_LEDS; i++)
-                digitalWrite(pinouts[i], LOW);
+                digitalWrite(leds_pinout[i], LOW);
 }

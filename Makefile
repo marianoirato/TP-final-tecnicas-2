@@ -2,13 +2,14 @@ CC = gcc
 AS = as
 LD = ld
 
-OBJECTS = main.o setup.o log_in.o secuencia_leds.o impresion_pantalla.o
+OBJECTS = main.o setup.o log_in.o secuencia_leds.o impresion_pantalla.o modo_remoto.o
 
 CFLAGS = -Wall -g -c
 ASFLAGS = -g
 LDFLAGS = -g
 
 # creamos los archivos .o y los compilamos todos juntos en main
+# una vez compilados, se borran los .o
 
 main:	$(OBJECTS)
 	$(CC) $(LDFLAGS) $(OBJECTS) -o main -lwiringPi -lcurses
@@ -24,6 +25,9 @@ secuencia_leds.o: secuencia_leds.c
 
 impresion_pantalla.o: impresion_pantalla.c
 	$(CC) $(CFLAGS) impresion_pantalla.c
+
+modo_remoto.o: modo_remoto.c
+	$(CC) $(CFLAGS) modo_remoto.c
 
 main.o: main.c
 	$(CC) $(CFLAGS) main.c

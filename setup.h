@@ -9,6 +9,6 @@ void set_delay();
 #define POTE BASE + 3
 #define FACTOR_DELAY 10
 
-extern const int pinouts[];
+extern const int leds_pinout[];
 
 #endif

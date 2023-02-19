@@ -43,7 +43,6 @@ int log_in()
 				contraseña = ingrese_contraseña(TAM_MAX_CONTRASEÑA);
 		}
 
-		
 		intentos++;
 
 		printf("Nombre de usuario o contraseña incorrecto. Le quedan %d intentos.\n", N_INTENTOS - intentos);
@@ -106,7 +105,7 @@ char * ingrese_contraseña(int tamaño_contraseña)
 
                 if(contraseña[i] == 127 && i > 0)
                 {
-                        printf("\b \b");
+			printf("\b \b");
                         i -= 2;
                 }
                 else if(contraseña[i] != 127 && contraseña[i] != 10)   //  no mostrar * si se presiona delete o enter

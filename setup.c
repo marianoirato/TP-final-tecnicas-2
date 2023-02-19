@@ -4,7 +4,7 @@
 #include "setup.h"
 #include "secuencia_leds.h"
 
-const int pinouts[] = {0, 1, 2, 3, 4, 5, 6, 7};
+const int leds_pinout[] = {0, 1, 2, 3, 4, 5, 6, 7};
 
 void setup()
 {
@@ -13,7 +13,7 @@ void setup()
 
         // declaramoos los pines de los leds como salidas
         for(int i = 0; i < N_LEDS; i++)
-                        pinMode(pinouts[i], OUTPUT);
+                        pinMode(leds_pinout[i], OUTPUT);
 	
 	// inicializamos el adc
 	pcf8591Setup(BASE, ADDRESS);

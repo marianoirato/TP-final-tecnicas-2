@@ -4,7 +4,7 @@
 #include "secuencia_leds.h"
 #include "setup.h"
 
-#define SALIR 115
+#define SALIR 115		// tecla 's'
 
 int opcion;                     // secuencia de leds elegida
 
