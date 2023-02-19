@@ -13,7 +13,7 @@ int main (void)
 	// inicializa los GPIO
 	setup();
 
-	menu();
+	modo();
 
 	return 0;
 }

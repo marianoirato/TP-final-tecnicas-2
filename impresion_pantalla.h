@@ -2,7 +2,8 @@
 #define _IMPRESION_PANTALLA_H
 
 void crear_ventana();
-void menu();
 int interrupcion();
+void menu();
+void modo();
 
 #endif

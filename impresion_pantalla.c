@@ -1,72 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h>
-#include "secuencia_leds.h"
 #include "setup.h"
+#include "impresion_pantalla.h"
+#include "secuencia_leds.h"
+#include "modo_remoto.h"
 
 #define SALIR 115		// tecla 's'
 
 int opcion;                     // secuencia de leds elegida
 
-void crear_ventana()
+void modo()
 {
-        WINDOW *win;
+	printf("\nElija el modo a utilizar: \n");
+	printf("1: Modo local.\n");
+	printf("2: Modo remoto.\n");
 
-        win = initscr();        // creamos la ventana
+	printf("Pulse cualquier otra tecla numérica para salir. \n");
 
-        nodelay(win, TRUE);     // esta funcion, hace que el getch no sea bloqueante
-        noecho();               // no imprime el caracter ingresado por teclado
-
-        keypad(stdscr, TRUE);   // agrega las flechas
-
-        clear();
-
-        mvprintw(0, 0, "Entraste a modo: ");
-
-        switch(opcion)
+	// aceptamos solamente números
+        while(scanf("%d", &opcion) != 1)        // si el scanf recibe un caracter, va a devolver algo distinto de 1
         {
-                case 1:
-                        mvprintw(0, 17, "Auto fantástico.");
-                        break;
-                case 2:
-                        mvprintw(0, 17, "El choque.");
-                        break;
-                case 3:
-                        mvprintw(0, 17, "La apilada.");
-                        break;
-                case 4:
-                        mvprintw(0, 17, "La carrera.");
-                        break;
-                case 5:
-                        mvprintw(0, 17, "Contador binario.");
-                        break;
-                case 6:
-                        mvprintw(0, 17, "Explosion.");
-                        break;
-                case 7:
-                        mvprintw(0, 17, "Random LED.");
-                        break;
-		case 8:
-                        mvprintw(0, 17, "Feliz cumpleaños.");
-                        break;
-		case 9: 
-			mvprintw(0, 17, "Setear delay.");
+                printf("Ingrese un número: ");
+                while(getchar() != '\n');       // este while es para que el printf no se imprima indefinidamente
+        }    
+
+	switch(opcion)
+	{
+		case 1:
+			menu();
+			break;
+		case 2:
+			modo_remoto();
 			break;
 		default:
-                        break;
-        }
-      
-	if(opcion != 9)
-	{
-		mvprintw(2, 0, "Pulse la flecha hacia arriba para aumentar la velocidad (-100 ms), y la fecha hacia abajo para disminuirla (+100 ms). \n");
-       		mvprintw(3, 0, "Pulse la tecla 's' para salir. \n\n");
-		// enviamos un 0 a variacio_velocidad, es decir, no varia la velocidad, por lo tanto, devuelve el delay actual
-		mvprintw(5, 0, "-Delay inicial: %d ms", variacion_velocidad(0)); 
-	}
-	else
-	{
-		mvprintw(2, 0, "Ajuste el potenciometro para cambiar el delay. \n");
-		mvprintw(3, 0, "Pulse la tecla 's' para salir. \n\n");
+			exit(0);
+			break;
 	}
 }
 
@@ -130,27 +99,92 @@ void menu()
 			cambiar_delay();
 			break;
 		default:
-                        exit(0);	// exit(0) es para salir del programa, sin volver a la función en la que fue llamado menu()
-                        break;		// en nuestro caso, sin volver a retardo
-        }
+                        modo();	
+                        break;	  
+	}
 }
 
+void crear_ventana()
+{
+        WINDOW *win;
+
+        win = initscr();        // creamos la ventana
+
+        nodelay(win, TRUE);     // esta funcion, hace que el getch no sea bloqueante
+        noecho();               // no imprime el caracter ingresado por teclado
+
+        keypad(stdscr, TRUE);   // agrega las flechas
+
+        clear();
+
+        mvprintw(0, 0, "Entraste a modo: ");
+
+        switch(opcion)
+        {
+                case 1:
+                        mvprintw(0, 17, "Auto fantástico.");
+                        break;
+                case 2:
+                        mvprintw(0, 17, "El choque.");
+                        break;
+                case 3:
+                        mvprintw(0, 17, "La apilada.");
+                        break;
+                case 4:
+                        mvprintw(0, 17, "La carrera.");
+                        break;
+                case 5:
+                        mvprintw(0, 17, "Contador binario.");
+                        break;
+                case 6:
+                        mvprintw(0, 17, "Explosion.");
+                        break;
+                case 7:
+                        mvprintw(0, 17, "Random LED.");
+                        break;
+		case 8:
+                        mvprintw(0, 17, "Feliz cumpleaños.");
+                        break;
+		case 9: 
+			mvprintw(0, 17, "Setear delay.");
+			break;
+		default:
+                        break;
+        }
+      
+	if(opcion != 9)
+	{
+		mvprintw(2, 0, "Pulse la flecha hacia arriba para aumentar la velocidad (-100 ms), y la fecha hacia abajo para disminuirla (+100 ms). \n");
+       		mvprintw(3, 0, "Pulse la tecla 's' para salir. \n\n");
+		// enviamos un 0 a variacio_velocidad, es decir, no varia la velocidad, por lo tanto, devuelve el delay actual
+		mvprintw(5, 0, "-Delay inicial: %d ms", variacion_velocidad(0)); 
+	}
+	else
+	{
+		mvprintw(2, 0, "Ajuste el potenciometro para cambiar el delay. \n");
+		mvprintw(3, 0, "Pulse la tecla 's' para salir. \n\n");
+	}
+}
 
 // en caso de que haya interrupcion se devuelve un 1
 int interrupcion()
 {
-        int tecla, retraso;
+        int tecla, retraso, retraso_anterior;
 
         tecla = getch();
 
         switch(tecla)
         {
                 case KEY_UP:
-                        retraso = variacion_velocidad(2);
-			move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
-                        clrtobot();     // limpiamos todo lo que esta en la linea y abajo
-                        mvprintw(6, 0, "-Aumentó la velocidad 100 ms.");
-                       	mvprintw(7, 0, "-Retraso: %d ms", retraso);
+                        retraso_anterior = variacion_velocidad(0); // lo hacemos para ver si el valor ya está en 100 ms, así no se impirme que se aumentó la velocidad
+			retraso = variacion_velocidad(2);
+			if(retraso != retraso_anterior)
+			{
+				move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
+				clrtobot();     // limpiamos todo lo que esta en la linea y abajo
+				mvprintw(6, 0, "-Aumentó la velocidad 100 ms.");
+				mvprintw(7, 0, "-Retraso: %d ms", retraso);
+			}
 			break;
                 case KEY_DOWN:
                         retraso = variacion_velocidad(1);
