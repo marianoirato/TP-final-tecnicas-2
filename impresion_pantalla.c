@@ -9,6 +9,7 @@
 #define SALIR 115		// tecla 's'
 
 int opcion;                     // secuencia de leds elegida
+int modo_local;
 
 void modo()
 {
@@ -28,9 +29,11 @@ void modo()
 	switch(opcion)
 	{
 		case 1:
+			modo_local = 1;
 			menu();
 			break;
 		case 2:
+			modo_local = 0;
 			modo_remoto();
 			break;
 		default:
@@ -169,38 +172,52 @@ void crear_ventana()
 // en caso de que haya interrupcion se devuelve un 1
 int interrupcion()
 {
-        int tecla, retraso, retraso_anterior;
+	int tecla, retraso, retraso_anterior;
 
-        tecla = getch();
+        if(modo_local)
+	{
+		tecla = getch();
 
-        switch(tecla)
-        {
-                case KEY_UP:
-                        retraso_anterior = variacion_velocidad(0); // lo hacemos para ver si el valor ya está en 100 ms, así no se impirme que se aumentó la velocidad
-			retraso = variacion_velocidad(2);
-			if(retraso != retraso_anterior)
-			{
+		switch(tecla)
+		{
+			case KEY_UP:
+				retraso_anterior = variacion_velocidad(0); // lo hacemos para ver si el valor ya está en 100 ms, así no se impirme que se aumentó la velocidad
+				retraso = variacion_velocidad(2);
+				if(retraso != retraso_anterior)
+				{
+					move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
+					clrtobot();     // limpiamos todo lo que esta en la linea y abajo
+					mvprintw(6, 0, "-Aumentó la velocidad 100 ms.");
+					mvprintw(7, 0, "-Retraso: %d ms", retraso);
+				}
+				break;
+			case KEY_DOWN:
+				retraso = variacion_velocidad(1);
 				move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
 				clrtobot();     // limpiamos todo lo que esta en la linea y abajo
-				mvprintw(6, 0, "-Aumentó la velocidad 100 ms.");
+				mvprintw(6, 0, "-Disminuyó la velocidad 100 ms.");
 				mvprintw(7, 0, "-Retraso: %d ms", retraso);
-			}
-			break;
-                case KEY_DOWN:
-                        retraso = variacion_velocidad(1);
-                        move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
-                        clrtobot();     // limpiamos todo lo que esta en la linea y abajo
-                        mvprintw(6, 0, "-Disminuyó la velocidad 100 ms.");
-                        mvprintw(7, 0, "-Retraso: %d ms", retraso);
-			break;
-                case SALIR:
-                        endwin();       // cerramos la ventana creada en crear_ventana()
-                        return 1;
-                        break;
+				break;
+			case SALIR:
+				endwin();       // cerramos la ventana creada en crear_ventana()
+				return 1;
+				break;
 
-                default:
-                        return 0;
-        }
+			default:
+				return 0;
+		}
+	}
+	else
+	{
+		tecla = leer_serial();
+
+		switch(tecla)
+		{
+			case SALIR:
+				return 1;
+				break;
+		}
+	}
 
         return 0;
 }

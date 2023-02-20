@@ -25,7 +25,7 @@ void retardo()
                 if(interrupcion())
                 {
                         apagar_leds(TODOS);
-                        menu();
+                        modo();
                 }
         }
 }

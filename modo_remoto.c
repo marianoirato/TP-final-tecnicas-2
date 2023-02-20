@@ -11,9 +11,10 @@
 #include "impresion_pantalla.h"
 #include "secuencia_leds.h"
 
+int fd;
+
 void modo_remoto()
 {
-	int fd ; /* Descriptor de archivo del puerto serie*/
 	char texto_menu[] =   "Elija una secuencia de leds: \r\n1: El auto Fantástico.\r\n2: El Choque.\r\n3: La Apilada.\r\n4: La Carrera.\r\n5: Contador binario.\r\n6: Explosion.\r\n7: Random LED.\r\n8: Feliz cumpleaños.\r\nPulse la tecla cero ('0') para salir.\r\n";
 	char opcion_remoto;
 
@@ -21,6 +22,8 @@ void modo_remoto()
 
         if ( fd == -1)
         	printf ("ERROR : no se pudo abrir el dispositivo.\n");
+
+	tcflush(fd, TCIOFLUSH);
 
 	write(fd, texto_menu, sizeof(texto_menu));
 
@@ -37,7 +40,57 @@ void modo_remoto()
 			write(fd, "Ingresaste el valor: ", 21);
 			write(fd, &opcion_remoto, sizeof(opcion_remoto));
 			write(fd, ".\r\n", 3);
+			tcdrain(fd);
 			auto_fantastico();
+			break;
+		case '2':
+			write(fd, "Ingresaste el valor: ", 21);
+			write(fd, &opcion_remoto, sizeof(opcion_remoto));
+			write(fd, ".\r\n", 3);
+			tcdrain(fd);
+			el_choque();
+			break;
+		case '3':
+			write(fd, "Ingresaste el valor: ", 21);
+			write(fd, &opcion_remoto, sizeof(opcion_remoto));
+			write(fd, ".\r\n", 3);
+			tcdrain(fd);
+			la_apilada();
+			break;
+		case '4':
+			write(fd, "Ingresaste el valor: ", 21);
+			write(fd, &opcion_remoto, sizeof(opcion_remoto));
+			write(fd, ".\r\n", 3);
+			tcdrain(fd);
+			la_carrera();
+			break;
+		case '5':
+			write(fd, "Ingresaste el valor: ", 21);
+			write(fd, &opcion_remoto, sizeof(opcion_remoto));
+			write(fd, ".\r\n", 3);
+			tcdrain(fd);
+			contador_binario();
+			break;
+		case '6':
+			write(fd, "Ingresaste el valor: ", 21);
+			write(fd, &opcion_remoto, sizeof(opcion_remoto));
+			write(fd, ".\r\n", 3);
+			tcdrain(fd);
+			explosion();
+			break;
+		case '7':
+			write(fd, "Ingresaste el valor: ", 21);
+			write(fd, &opcion_remoto, sizeof(opcion_remoto));
+			write(fd, ".\r\n", 3);
+			tcdrain(fd);
+			random_led();
+			break;
+		case '8':
+			write(fd, "Ingresaste el valor: ", 21);
+			write(fd, &opcion_remoto, sizeof(opcion_remoto));
+			write(fd, ".\r\n", 3);
+			tcdrain(fd);
+			feliz_cumple();
 			break;
 		default:
 			modo();
@@ -45,4 +98,13 @@ void modo_remoto()
 	}
 
         close (fd);
+}
+
+char leer_serial()
+{
+	char dato;
+
+	read(fd, &dato, sizeof(dato));
+
+	return dato;
 }

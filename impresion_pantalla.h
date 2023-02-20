@@ -6,4 +6,7 @@ int interrupcion();
 void menu();
 void modo();
 
+extern int opcion;                     // secuencia de leds elegida
+extern int modo_local;
+
 #endif
