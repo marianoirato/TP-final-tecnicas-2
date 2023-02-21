@@ -3,7 +3,7 @@
 
 void setup();
 void retardo();
-int variacion_velocidad(int);
+extern int variacion_velocidad(int, int);
 int* dec_to_bin(int);
 
 // secuencias de leds

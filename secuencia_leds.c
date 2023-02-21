@@ -30,7 +30,7 @@ void retardo()
                 }
         }
 }
-
+/*
 int variacion_velocidad(int var)
 {
         // cuando se apreta la flecha hacia arriba, el delay disminuye (aumenta la velocidad)
@@ -43,7 +43,7 @@ int variacion_velocidad(int var)
 
         // devolvemos el tiempo para poder imprimirlo en pantalla
         return tiempo_retardo;
-}
+}*/
 
 void auto_fantastico()
 {

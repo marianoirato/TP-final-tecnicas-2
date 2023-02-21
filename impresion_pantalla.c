@@ -160,13 +160,13 @@ void crear_ventana()
 		default:
                         break;
         }
-      
+
 	if(opcion != 9)
 	{
 		mvprintw(2, 0, "Pulse la flecha hacia arriba para aumentar la velocidad (-100 ms), y la fecha hacia abajo para disminuirla (+100 ms). \n");
        		mvprintw(3, 0, "Pulse la tecla 's' para salir. \n\n");
 		// enviamos un 0 a variacio_velocidad, es decir, no varia la velocidad, por lo tanto, devuelve el delay actual
-		mvprintw(5, 0, "-Delay inicial: %d ms", variacion_velocidad(0)); 
+		mvprintw(5, 0, "-Delay inicial: %d ms", tiempo_retardo); 
 	}
 	else
 	{
@@ -178,7 +178,7 @@ void crear_ventana()
 // en caso de que haya interrupcion se devuelve un 1
 int interrupcion()
 {
-	int tecla, retraso, retraso_anterior;
+	int tecla, retraso_anterior;
 
 	// modo local
         if(modo_elegido)
@@ -188,22 +188,22 @@ int interrupcion()
 		switch(tecla)
 		{
 			case KEY_UP:
-				retraso_anterior = variacion_velocidad(0); // lo hacemos para ver si el valor ya está en 100 ms, así no se impirme que se aumentó la velocidad
-				retraso = variacion_velocidad(2);
-				if(retraso != retraso_anterior)
+				retraso_anterior = tiempo_retardo; // lo hacemos para ver si el valor ya está en 100 ms, así no se impirme que se aumentó la velocidad
+				tiempo_retardo = variacion_velocidad(2, tiempo_retardo);
+				if(tiempo_retardo != retraso_anterior)
 				{
 					move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
 					clrtobot();     // limpiamos todo lo que esta en la linea y abajo
 					mvprintw(6, 0, "-Aumentó la velocidad 100 ms.");
-					mvprintw(7, 0, "-Retraso: %d ms", retraso);
+					mvprintw(7, 0, "-Retraso: %d ms", tiempo_retardo);
 				}
 				break;
 			case KEY_DOWN:
-				retraso = variacion_velocidad(1);
+				tiempo_retardo = variacion_velocidad(1, tiempo_retardo);
 				move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
 				clrtobot();     // limpiamos todo lo que esta en la linea y abajo
 				mvprintw(6, 0, "-Disminuyó la velocidad 100 ms.");
-				mvprintw(7, 0, "-Retraso: %d ms", retraso);
+				mvprintw(7, 0, "-Retraso: %d ms", tiempo_retardo);
 				break;
 			case SALIR:
 				endwin();       // cerramos la ventana creada en crear_ventana()
@@ -225,7 +225,7 @@ int interrupcion()
 				return 1;
 				break;
 			case '[':
-				retraso = variacion_velocidad(1);
+				//variacion_velocidad(1);
 				break;
 		}
 	}

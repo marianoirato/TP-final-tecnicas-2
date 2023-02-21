@@ -1,12 +1,10 @@
 CC = gcc
 AS = as
-LD = ld
 
 OBJECTS = main.o setup.o log_in.o secuencia_leds.o impresion_pantalla.o modo_remoto.o variacion_velocidad.o
 
 CFLAGS = -Wall -g -c
 ASFLAGS = -Wall -g  
-LDFLAGS = -g
 
 # creamos los archivos .o y los compilamos todos juntos en main
 # una vez compilados, se borran los .o
