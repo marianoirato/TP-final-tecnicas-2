@@ -13,7 +13,7 @@ variacion_velocidad:
 // cuando se apreta la flecha hacia arriba, el delay disminuye (aumenta la velocidad)
 caso1:  CMP R1,#200		
 	SUBGE R0,R1,#100
-	MOV R0, R1
+	BLT default
 	B salir
 
 // cuando se apreta la flecha hacia abajo, el delay aumenta (disminuye la velocidad)
