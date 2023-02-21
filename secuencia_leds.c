@@ -6,6 +6,7 @@
 #include "secuencia_leds.h"
 #include "setup.h"
 #include "impresion_pantalla.h"
+#include "modo_remoto.h"
 
 int tiempo_retardo;
 
@@ -25,7 +26,7 @@ void retardo()
                 if(interrupcion())
                 {
                         apagar_leds(TODOS);
-                        modo();
+			modo();
                 }
         }
 }

@@ -2,10 +2,10 @@ CC = gcc
 AS = as
 LD = ld
 
-OBJECTS = main.o setup.o log_in.o secuencia_leds.o impresion_pantalla.o modo_remoto.o
+OBJECTS = main.o setup.o log_in.o secuencia_leds.o impresion_pantalla.o modo_remoto.o variacion_velocidad.o
 
 CFLAGS = -Wall -g -c
-ASFLAGS = -g
+ASFLAGS = -Wall -g  
 LDFLAGS = -g
 
 # creamos los archivos .o y los compilamos todos juntos en main
@@ -28,6 +28,9 @@ impresion_pantalla.o: impresion_pantalla.c
 
 modo_remoto.o: modo_remoto.c
 	$(CC) $(CFLAGS) modo_remoto.c
+
+variacion_velocidad.o: variacion_velocidad.s
+	$(AS) $(ASFLAGS) variacion_velocidad.s -o variacion_velocidad.o
 
 main.o: main.c
 	$(CC) $(CFLAGS) main.c

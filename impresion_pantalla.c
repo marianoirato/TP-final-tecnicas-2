@@ -8,33 +8,37 @@
 
 #define SALIR 115		// tecla 's'
 
-int opcion;                     // secuencia de leds elegida
-int modo_local;
+int opcion = 0;                     // secuencia de leds elegida
+int modo_elegido;
+int elegir_modo = 1;
 
 void modo()
 {
-	printf("\nElija el modo a utilizar: \n");
-	printf("1: Modo local.\n");
-	printf("2: Modo remoto.\n");
-
-	printf("Pulse cualquier otra tecla numérica para salir. \n");
-
-	// aceptamos solamente números
-        while(scanf("%d", &opcion) != 1)        // si el scanf recibe un caracter, va a devolver algo distinto de 1
-        {
-                printf("Ingrese un número: ");
-                while(getchar() != '\n');       // este while es para que el printf no se imprima indefinidamente
-        }    
-
-	switch(opcion)
+	if(elegir_modo)
 	{
-		case 1:
-			modo_local = 1;
-			menu();
-			break;
-		case 2:
-			modo_local = 0;
+		printf("\nElija el modo a utilizar: \n");
+		printf("0: Modo remoto.\n");
+		printf("1: Modo local.\n");
+
+		printf("Pulse cualquier otra tecla numérica para salir. \n");
+
+		// aceptamos solamente números
+		while(scanf("%d", &modo_elegido) != 1)        // si el scanf recibe un caracter, va a devolver algo distinto de 1
+		{
+			printf("Ingrese un número: ");
+			while(getchar() != '\n');       // este while es para que el printf no se imprima indefinidamente
+		}   
+
+		elegir_modo = 0;
+	}
+
+	switch(modo_elegido)
+	{
+		case 0:
 			modo_remoto();
+			break;
+		case 1:
+			modo_local();
 			break;
 		default:
 			exit(0);
@@ -42,7 +46,7 @@ void modo()
 	}
 }
 
-void menu()
+void modo_local()
 {
         printf("\nElija una secuencia de leds: \n");
         printf("1: El auto Fantástico. \n");
@@ -56,7 +60,8 @@ void menu()
        	printf("9: Setear delay. \n");
 
 	printf("Pulse cualquier otra tecla numérica para salir. \n");
- 	// aceptamos solamente números
+ 	
+	// aceptamos solamente números
 	while(scanf("%d", &opcion) != 1)	// si el scanf recibe un caracter, va a devolver algo distinto de 1
 	{
 		printf("Ingrese un número: ");
@@ -102,7 +107,8 @@ void menu()
 			cambiar_delay();
 			break;
 		default:
-                        modo();	
+                        elegir_modo = 1;
+			modo();	
                         break;	  
 	}
 }
@@ -174,7 +180,8 @@ int interrupcion()
 {
 	int tecla, retraso, retraso_anterior;
 
-        if(modo_local)
+	// modo local
+        if(modo_elegido)
 	{
 		tecla = getch();
 
@@ -207,6 +214,7 @@ int interrupcion()
 				return 0;
 		}
 	}
+	// modo remoto
 	else
 	{
 		tecla = leer_serial();
@@ -215,6 +223,9 @@ int interrupcion()
 		{
 			case SALIR:
 				return 1;
+				break;
+			case '[':
+				retraso = variacion_velocidad(1);
 				break;
 		}
 	}
