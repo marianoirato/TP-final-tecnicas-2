@@ -1,8 +1,11 @@
+// librerías externas
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <ncurses.h>
 #include <wiringPi.h>
+
+// archivos de cabecera propios
 #include "secuencia_leds.h"
 #include "setup.h"
 #include "impresion_pantalla.h"

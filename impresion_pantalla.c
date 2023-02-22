@@ -1,6 +1,9 @@
+// librerías externas
 #include <stdio.h>
 #include <stdlib.h>
-#include <ncurses.h>
+#include <ncurses.h>		// libreria utilizada para poder leer el teclado sin que sea bloqueante
+
+// archivos de cabecera propios
 #include "setup.h"
 #include "impresion_pantalla.h"
 #include "secuencia_leds.h"
@@ -8,12 +11,13 @@
 
 #define SALIR 115		// tecla 's'
 
-int opcion = 0;                     // secuencia de leds elegida
+int opcion = 0;				// secuencia de leds elegida
 int modo_elegido;
-int elegir_modo = 1;
+int elegir_modo = 1;			// si ya tenemos un modo elegido, esta variable nos permite volver al menú de ese modo			
 
 void modo()
 {
+	// si todavía no elegimos modo, entramos a esta función
 	if(elegir_modo)
 	{
 		printf("\nElija el modo a utilizar. \n");
@@ -31,7 +35,6 @@ void modo()
 
 		elegir_modo = 0;
 	}
-
 
 	switch(modo_elegido)
 	{
@@ -72,7 +75,7 @@ void modo_local()
         switch(opcion)
         {
                 case 1:
-                        crear_ventana();
+                        crear_ventana();	// esta función pertenece a la librería ncurses
                         auto_fantastico();
                         break;
                 case 2:
@@ -120,14 +123,14 @@ void crear_ventana()
 
         win = initscr();        // creamos la ventana
 
-        nodelay(win, TRUE);     // esta funcion, hace que el getch no sea bloqueante
+        nodelay(win, TRUE);     // esta función, hace que el getch no sea bloqueante
         noecho();               // no imprime el caracter ingresado por teclado
 
-        keypad(stdscr, TRUE);   // agrega las flechas
+        keypad(stdscr, TRUE);   // agrega las flechas para poder cambiar el delay
 
-        clear();
+        clear();		// limpiamos la ventana
 
-        mvprintw(0, 0, "Entraste a modo: ");
+        mvprintw(0, 0, "Entraste a modo: ");	// move (x,y) print window, es una función perteneciente a la librería ncurses
 
         switch(opcion)
         {
@@ -162,6 +165,7 @@ void crear_ventana()
                         break;
         }
 
+	// mientras la opción no sea 9, se imprime lo siguiente
 	if(opcion != 9)
 	{
 		mvprintw(2, 0, "Pulse la flecha hacia arriba para aumentar la velocidad (-100 ms), y la fecha hacia abajo para disminuirla (+100 ms). \n");
@@ -169,6 +173,7 @@ void crear_ventana()
 		// enviamos un 0 a variacio_velocidad, es decir, no varia la velocidad, por lo tanto, devuelve el delay actual
 		mvprintw(5, 0, "-Delay inicial: %d ms", tiempo_retardo); 
 	}
+	// en caso de que la opción sea 9, entonces no imprimimos lo de arriba debido a que esta función solo cambia el valor del delay
 	else
 	{
 		mvprintw(2, 0, "Ajuste el potenciometro para cambiar el delay. \n");
@@ -189,8 +194,8 @@ int interrupcion()
 		switch(tecla)
 		{
 			case KEY_UP:
-				retraso_anterior = tiempo_retardo; // lo hacemos para ver si el valor ya está en 100 ms, así no se impirme que se aumentó la velocidad
-				tiempo_retardo = variacion_velocidad(2, tiempo_retardo);
+				retraso_anterior = tiempo_retardo;	// lo hacemos para ver si el valor ya está en 100 ms, así no se impirme que se aumentó la velocidad
+				tiempo_retardo = variacion_velocidad(2, tiempo_retardo);	//variación de velocidad aumenta o disminuye la velocidad según la flecha ingresada, esta función esta escrita en asm
 				if(tiempo_retardo != retraso_anterior)
 				{
 					move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
@@ -223,7 +228,7 @@ int interrupcion()
 			// flecha hacia arriba
 			case 'p':	
 				tiempo_retardo = variacion_velocidad(2, tiempo_retardo);
-				imprimir_retardo(1);
+				imprimir_retardo(1);	// si imprimir retardo recibe un 1, significa que tiene que imprimir el valor del delay, pero antes tiene que borrar el impreso anteriormente
 				break;
 			// flecha hacia abajo
 			case 'l':

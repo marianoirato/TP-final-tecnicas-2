@@ -1,6 +1,9 @@
+// librerías externas
 #include <stdio.h>
 #include <termios.h>
 #include <string.h>
+
+// archivos de cabecera propios
 #include "log_in.h"
 
 #define FD_STDIN 0
@@ -9,12 +12,13 @@ int log_in()
 {
 	int intentos = 0;
 
-	usuarios * usuario = crear_usuarios();
+	usuarios * usuario = crear_usuarios();	// creamos la estructura usuario
 
+	// se repite hasta que no haya mas intentos
         while(intentos < N_INTENTOS)
 	{
-		char * nombre_usuario = ingrese_usuario();
-		char * contraseña;
+		char * nombre_usuario = ingrese_usuario();	// guardamos el nombre ingresado por teclado
+		char * contraseña;				// guardamos la contraseña ingresada por teclado
 		int tamaño_contraseña = 0;
 
         	for(int i = 0; i < CANTIDAD_USUARIOS; i++)

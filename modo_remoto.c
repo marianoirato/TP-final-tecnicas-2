@@ -1,3 +1,4 @@
+// librerías externas
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,11 +8,12 @@
 #include <fcntl.h>
 #include <termios.h>
 
+// archivos de cabecera propios
 #include "modo_remoto.h"
 #include "impresion_pantalla.h"
 #include "secuencia_leds.h"
 
-int fd;
+int fd;	// file descriptor
 
 void modo_remoto()
 {
@@ -27,18 +29,16 @@ void modo_remoto()
 	if(termset(fd , 9600, &oldtty, &newtty) == -1)
   		printf(" ERROR : no se pudo configurar el TTY \n" );
 
-	tcflush(fd, TCIOFLUSH);
+	tcflush(fd, TCIOFLUSH);	// limpia lo que se encuentra en el buffer
 
 	write(fd, texto_menu, sizeof(texto_menu));
 
-	tcdrain(fd);
+	tcdrain(fd);	// esta función espera hasta que se escribe toda la información
 
+	// esperamos hasta que se ingrese un número entre 0 y 8
 	do
 		read(fd, &opcion_remoto, sizeof(opcion_remoto));
 	while(!(opcion_remoto >= '0' && opcion_remoto <= '8'));
-	
-
-	tcdrain(fd);
 	
 	switch(opcion_remoto)
 	{
@@ -47,7 +47,8 @@ void modo_remoto()
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "Auto Fantastico.\r\n", 18);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
-			imprimir_retardo(0);
+			write(fd, "Ingrese la tecla 'p' para aumentar la velocidad o la tecla 'l' para disminuirla.\r\n", 82);		
+			imprimir_retardo(0);	// se envía un 0 porque es la primera vez que se imprime el retardo, no queremos que lo borre
 			auto_fantastico();
 			break;
 		case '2':
@@ -102,7 +103,7 @@ void modo_remoto()
 		default:
 			write(fd, "Saliste del modo remoto.\r\n\r\n", 28);
 			limpiar_serial();
-			elegir_modo = 1;
+			elegir_modo = 1;	// si salimos del modo, queremos que nos vuelva a preguntar que modo queremos utilizar
 			close(fd);
 			modo();
 			break;
@@ -111,8 +112,10 @@ void modo_remoto()
         close(fd);
 }
 
+// configuramos la comunicación serial
 int termset(int fd, int baudrate, struct termios *ttyold, struct termios *ttynew)
 {
+	// elegimos el baudrate
 	switch(baudrate)
 	{
 		case 115200: 
@@ -135,21 +138,24 @@ int termset(int fd, int baudrate, struct termios *ttyold, struct termios *ttynew
 			break;
 	}
 
+	// copiamos los atributos de la terminal en ttyold
 	if(tcgetattr(fd, ttyold) != 0)
 	{
 		printf(" ERROR : tcgetattr \n");
 		return -1;
 	}
 
+	// copiamos los atributos en la nueva terminal
 	ttynew = ttyold;
-	cfsetospeed(ttynew, baudrate);
-	cfsetispeed(ttynew, baudrate);
-	ttynew -> c_cflag = ( ttynew -> c_cflag & ~CSIZE ) | CS8 ; // 8 data bits (8)
-	ttynew -> c_cflag &= ~( PARENB | PARODD ); // no parity (N )
-	ttynew -> c_cflag &= ~CSTOPB ;// 1 stop bit (1)
+	// modificamos la nueva terminal
+	cfsetospeed(ttynew, baudrate);	// seteamos el baudrate del output
+	cfsetispeed(ttynew, baudrate);	// seteamos el baudrate del input
+	ttynew -> c_cflag = ( ttynew -> c_cflag & ~CSIZE ) | CS8 ;	// 8 data bits (8)
+	ttynew -> c_cflag &= ~( PARENB | PARODD );	// no parity (N)
+	ttynew -> c_cflag &= ~CSTOPB ;	// 1 stop bit (1)
 
-	ttynew -> c_cflag |= (CLOCAL | CREAD);         // ignore modem status lines , and
-	ttynew -> c_cflag &= ~CRTSCTS;                 // no flow control
+	ttynew -> c_cflag |= (CLOCAL | CREAD);          // ignore modem status lines , and
+	ttynew -> c_cflag &= ~CRTSCTS;                  // no flow control
 	ttynew -> c_iflag &= ~IGNBRK ;                  // disable break processing
 	ttynew -> c_iflag &= ~( IXON | IXOFF | IXANY ); // shut off xon / xoff ctrl
 
@@ -157,11 +163,7 @@ int termset(int fd, int baudrate, struct termios *ttyold, struct termios *ttynew
 	ttynew -> c_oflag = 0;
 	ttynew -> c_cc[VMIN] = 0;
 	ttynew -> c_cc[VTIME] = 100;
-	/*
-	* TCSANOW : Make the change immediately .
-	* TCSADRAIN : Make the change after all queued output has been written .
-	* TCSAFLUSH : This is like TCSADRAIN , but also discards any queued input .
-	*/
+	
 	if(tcsetattr(fd, TCSANOW, ttynew) != 0)
 	{
 		printf(" ERROR : tcsetattr \n" );
@@ -184,6 +186,7 @@ void imprimir_retardo(int borrar)
 {
 	if(borrar == 1)
 	{
+		// estos caracteres nos permiten limpiar la terminal serial
 		const char* limpiar_delay_anterior = "\033[2K";
 		const char* mover_cursor = "\033[1A";
 
@@ -194,7 +197,7 @@ void imprimir_retardo(int borrar)
 	
 	char retardo[50];
 
-	// esta funcion hace que el valor de tiempo de retardo se guarde en la cadena
+	// esta función hace que el valor de tiempo de retardo se guarde en la cadena
 	// para así poder mandarla por serial
 	sprintf(retardo, "Delay: %d ms.\r\n", tiempo_retardo);
 	
@@ -204,6 +207,7 @@ void imprimir_retardo(int borrar)
 
 void limpiar_serial()
 {
+	// estos caracteres nos permiten limpiar la terminal serial
 	const char* limpiar_pantalla = "\033[2J";
 	const char* mover_cursor = "\033[H";
 	

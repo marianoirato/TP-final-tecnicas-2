@@ -1,4 +1,7 @@
+// librerías externas
 #include <stdio.h>
+
+// archivos de cabecera propios
 #include "setup.h"
 #include "log_in.h"
 #include "secuencia_leds.h"
@@ -13,6 +16,7 @@ int main (void)
 	// inicializa los GPIO
 	setup();
 
+	// elegimos modo local o modo remoto
 	modo();
 
 	return 0;
