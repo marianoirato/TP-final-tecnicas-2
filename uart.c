@@ -7,7 +7,7 @@
 int main(int argc, char *argv[]) {
     struct termios oldtio, newtio;
     int fd;
-    char c;
+    char c[3];
 
     // Open the serial device
     fd = open("/dev/ttyS0", O_RDWR | O_NOCTTY);
@@ -30,17 +30,27 @@ int main(int argc, char *argv[]) {
     tcsetattr(fd, TCSANOW, &newtio);
 
     // Read characters from the serial device
-    while (1) {
-        if (read(fd, &c, 1) == '[') {
-                    read(fd, &c, 1);
-                    if (c == 'A') {
-                        printf("Up arrow key pressed\n");
-                    } else if (c == 'B') {
-                        printf("Down arrow key pressed\n");
-                    }
-            }
-        }
     
+	while (1) 
+	{
+		read(fd,c,3); 
+		printf("Tecla 1: %s", c);	
+		switch(c[0])
+		{
+			case '\e':
+				printf("Tecla 2: %d %c", c[1],c[1]);	
+				if(c[1] == '[')
+				{
+					printf("Tecla 3: %d %c", c[2],c[2]);	
+					if(c[2] == 'A')
+						printf("UP arrow key\n");
+
+					if(c[2] == 'B')
+						printf("DOWN arrow key\n");
+				}
+				break;
+		}
+	}
 
     // Restore original serial port settings and close the serial device
     tcsetattr(fd, TCSANOW, &oldtio);

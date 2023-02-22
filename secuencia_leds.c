@@ -30,20 +30,19 @@ void retardo()
                 }
         }
 }
-/*
-int variacion_velocidad(int var)
+
+void retardo_fijo()
 {
-        // cuando se apreta la flecha hacia arriba, el delay disminuye (aumenta la velocidad)
-        if(var == 2 && tiempo_retardo >= 200)
-                tiempo_retardo -= 100;
+        int tiempo_anterior, tiempo_actual;
 
-        // cuando se apreta la flecha hacia abajo, el delay aumenta (disminuye la velocidad)
-        if(var == 1)
-                tiempo_retardo += 100;
+        // tomamos el tiempo actual, y actualizamos ambos valores
+        tiempo_actual = millis();
+        tiempo_anterior = tiempo_actual;
 
-        // devolvemos el tiempo para poder imprimirlo en pantalla
-        return tiempo_retardo;
-}*/
+        // esperamos 100 ms
+        while(tiempo_actual < tiempo_anterior + 100)
+                tiempo_actual = millis();
+}
 
 void auto_fantastico()
 {

@@ -7,7 +7,8 @@ extern struct termios ttyold, ttynew;
 void modo_remoto();
 int termset(int fd, int baudrate, struct termios *ttyold, struct termios *ttynew);
 char leer_serial();
-
+void limpiar_serial();
+void imprimir_retardo(int);
 
 #endif
 

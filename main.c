@@ -7,8 +7,8 @@
 int main (void)
 {
 	// si se ingresa mal termina el programa luego de N intentos
-	//if(!log_in())
-	//	return 0;
+	if(!log_in())
+		return 0;
 
 	// inicializa los GPIO
 	setup();

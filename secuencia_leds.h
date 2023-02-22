@@ -3,6 +3,7 @@
 
 void setup();
 void retardo();
+void retardo_fijo();
 extern int variacion_velocidad(int, int);
 int* dec_to_bin(int);
 

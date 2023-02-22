@@ -16,7 +16,7 @@ void modo()
 {
 	if(elegir_modo)
 	{
-		printf("\nElija el modo a utilizar: \n");
+		printf("\nElija el modo a utilizar. \n");
 		printf("0: Modo remoto.\n");
 		printf("1: Modo local.\n");
 
@@ -31,6 +31,7 @@ void modo()
 
 		elegir_modo = 0;
 	}
+
 
 	switch(modo_elegido)
 	{
@@ -48,7 +49,7 @@ void modo()
 
 void modo_local()
 {
-        printf("\nElija una secuencia de leds: \n");
+        printf("\nElija una secuencia de leds. \n");
         printf("1: El auto Fantástico. \n");
         printf("2: El Choque. \n");
         printf("3: La Apilada. \n");
@@ -217,15 +218,21 @@ int interrupcion()
 	// modo remoto
 	else
 	{
-		tecla = leer_serial();
-
-		switch(tecla)
+		switch(leer_serial())
 		{
-			case SALIR:
-				return 1;
+			// flecha hacia arriba
+			case 'p':	
+				tiempo_retardo = variacion_velocidad(2, tiempo_retardo);
+				imprimir_retardo(1);
 				break;
-			case '[':
-				//variacion_velocidad(1);
+			// flecha hacia abajo
+			case 'l':
+				tiempo_retardo = variacion_velocidad(1, tiempo_retardo);
+				imprimir_retardo(1);
+				break;
+			case SALIR:
+				limpiar_serial();
+				return 1;
 				break;
 		}
 	}

@@ -15,7 +15,7 @@ int fd;
 
 void modo_remoto()
 {
-	char texto_menu[] =   "\r\nElija una secuencia de leds.\r\n1: El auto Fantástico.\r\n2: El Choque.\r\n3: La Apilada.\r\n4: La Carrera.\r\n5: Contador binario.\r\n6: Explosion.\r\n7: Random LED.\r\n8: Feliz cumpleaños.\r\nPulse la tecla cero ('0') para salir.\r\n\r\n";
+	char texto_menu[] =   "Elija una secuencia de leds.\r\n1: El auto Fantástico.\r\n2: El Choque.\r\n3: La Apilada.\r\n4: La Carrera.\r\n5: Contador binario.\r\n6: Explosion.\r\n7: Random LED.\r\n8: Feliz cumpleaños.\r\nPulse la tecla cero ('0') para salir.\r\n\r\n";
 	char opcion_remoto;
 	struct termios oldtty, newtty;
 
@@ -47,52 +47,61 @@ void modo_remoto()
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "Auto Fantastico.\r\n", 18);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			imprimir_retardo(0);
 			auto_fantastico();
 			break;
 		case '2':
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "El Choque.\r\n", 12);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			imprimir_retardo(0);
 			el_choque();
 			break;
 		case '3':
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "La Apilada.\r\n", 13);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			imprimir_retardo(0);
 			la_apilada();
 			break;
 		case '4':
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "La Carrera.\r\n", 13);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			imprimir_retardo(0);
 			la_carrera();
 			break;
 		case '5':
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "Contador Binario.\r\n", 19);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			imprimir_retardo(0);
 			contador_binario();
 			break;
 		case '6':
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "Expolosion.\r\n", 13);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			imprimir_retardo(0);
 			explosion();
 			break;
 		case '7':
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "Random LED.\r\n", 13);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			imprimir_retardo(0);
 			random_led();
 			break;
 		case '8':
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "Feliz Cumpleanos.\r\n", 19);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			imprimir_retardo(0);
 			feliz_cumple();
 			break;
 		default:
 			write(fd, "Saliste del modo remoto.\r\n\r\n", 28);
+			limpiar_serial();
 			elegir_modo = 1;
 			close(fd);
 			modo();
@@ -158,6 +167,7 @@ int termset(int fd, int baudrate, struct termios *ttyold, struct termios *ttynew
 		printf(" ERROR : tcsetattr \n" );
 		return -1;
 	}
+
 	return 0;
 }
 
@@ -168,4 +178,36 @@ char leer_serial()
 	read(fd, &dato, sizeof(dato));
 
 	return dato;
+}
+
+void imprimir_retardo(int borrar)
+{
+	if(borrar == 1)
+	{
+		const char* limpiar_delay_anterior = "\033[2K";
+		const char* mover_cursor = "\033[1A";
+
+		write(fd, limpiar_delay_anterior, strlen(limpiar_delay_anterior));
+		retardo_fijo();
+		write(fd, mover_cursor, strlen(mover_cursor));
+	}
+	
+	char retardo[50];
+
+	// esta funcion hace que el valor de tiempo de retardo se guarde en la cadena
+	// para así poder mandarla por serial
+	sprintf(retardo, "Delay: %d ms.\r\n", tiempo_retardo);
+	
+	// una vez tenemos la cadena formada, la mandamos por serial
+	write(fd, retardo, strlen(retardo));
+}
+
+void limpiar_serial()
+{
+	const char* limpiar_pantalla = "\033[2J";
+	const char* mover_cursor = "\033[H";
+	
+	write(fd, mover_cursor, strlen(mover_cursor));
+	retardo_fijo();	// se pone un retardo porque se necesita que pase un tiempo entre limpiar la pantalla y mover el cursor
+	write(fd, limpiar_pantalla, strlen(limpiar_pantalla));
 }
