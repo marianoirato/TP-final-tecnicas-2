@@ -194,30 +194,39 @@ int interrupcion()
 		switch(tecla)
 		{
 			case KEY_UP:
-				retraso_anterior = tiempo_retardo;	// lo hacemos para ver si el valor ya está en 100 ms, así no se impirme que se aumentó la velocidad
-				tiempo_retardo = variacion_velocidad(2, tiempo_retardo);	//variación de velocidad aumenta o disminuye la velocidad según la flecha ingresada, esta función esta escrita en asm
-				if(tiempo_retardo != retraso_anterior)
+				// si estamos en modo setear delay, solo podemos cambiarlo utilizando el potenciomentro y no las flechas
+				if(opcion != 9)
 				{
-					move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
-					clrtobot();     // limpiamos todo lo que esta en la linea y abajo
-					mvprintw(6, 0, "-Aumentó la velocidad 100 ms.");
-					mvprintw(7, 0, "-Retraso: %d ms", tiempo_retardo);
+					retraso_anterior = tiempo_retardo;	// lo hacemos para ver si el valor ya está en 100 ms, así no se impirme que se aumentó la velocidad
+					tiempo_retardo = variacion_velocidad(2, tiempo_retardo);	//variación de velocidad aumenta o disminuye la velocidad según la flecha ingresada, esta función esta escrita en asm
+					if(tiempo_retardo != retraso_anterior)
+					{
+						move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
+						clrtobot();     // limpiamos todo lo que esta en la linea y abajo
+						mvprintw(6, 0, "-Aumentó la velocidad 100 ms.");
+						mvprintw(7, 0, "-Retraso: %d ms", tiempo_retardo);
+					}
 				}
 				break;
 			case KEY_DOWN:
-				tiempo_retardo = variacion_velocidad(1, tiempo_retardo);
-				move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
-				clrtobot();     // limpiamos todo lo que esta en la linea y abajo
-				mvprintw(6, 0, "-Disminuyó la velocidad 100 ms.");
-				mvprintw(7, 0, "-Retraso: %d ms", tiempo_retardo);
+				// si estamos en modo setear delay, solo podemos cambiarlo utilizando el potenciomentro y no las flechas
+				if(opcion !=9)
+				{
+					tiempo_retardo = variacion_velocidad(1, tiempo_retardo);
+					move(6,0);      // nos movemos para luego limpiar en el lugar que queremos
+					clrtobot();     // limpiamos todo lo que esta en la linea y abajo
+					mvprintw(6, 0, "-Disminuyó la velocidad 100 ms.");
+					mvprintw(7, 0, "-Retraso: %d ms", tiempo_retardo);
+				}
 				break;
-			case SALIR:
+			case SALIR:		// pulsando tecla 's' salimos
 				endwin();       // cerramos la ventana creada en crear_ventana()
 				return 1;
 				break;
 
 			default:
 				return 0;
+				break;
 		}
 	}
 	// modo remoto

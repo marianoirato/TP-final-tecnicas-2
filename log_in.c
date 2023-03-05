@@ -104,7 +104,8 @@ char * ingrese_contraseña(int tamaño_contraseña)
 
 	printf("Ingrese su conraseña: ");
 
-        for(int i = 0; i < tamaño_contraseña; i++){
+        for(int i = 0; i < tamaño_contraseña; i++)
+	{
                 contraseña[i] = getchar();
 
                 if(contraseña[i] == 127 && i > 0)

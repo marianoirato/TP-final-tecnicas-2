@@ -21,7 +21,7 @@ void modo_remoto()
 	char opcion_remoto;
 	struct termios oldtty, newtty;
 
-	fd = open ("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NONBLOCK);
+	fd = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NONBLOCK);	// RDWR = escritura y lectura, NONBLOCK = no bloqueante
         
 	if(fd == -1)
         	printf("ERROR : no se pudo abrir el dispositivo.\n");
@@ -31,6 +31,8 @@ void modo_remoto()
 
 	tcflush(fd, TCIOFLUSH);	// limpia lo que se encuentra en el buffer
 
+	limpiar_serial();
+
 	write(fd, texto_menu, sizeof(texto_menu));
 
 	tcdrain(fd);	// esta función espera hasta que se escribe toda la información
@@ -39,7 +41,7 @@ void modo_remoto()
 	do
 		read(fd, &opcion_remoto, sizeof(opcion_remoto));
 	while(!(opcion_remoto >= '0' && opcion_remoto <= '8'));
-	
+
 	switch(opcion_remoto)
 	{
 		// las ' ' se ponen porque el serial nos devuleve un char, no un int
@@ -55,6 +57,7 @@ void modo_remoto()
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "El Choque.\r\n", 12);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			write(fd, "Ingrese la tecla 'p' para aumentar la velocidad o la tecla 'l' para disminuirla.\r\n", 82);		
 			imprimir_retardo(0);
 			el_choque();
 			break;
@@ -62,6 +65,7 @@ void modo_remoto()
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "La Apilada.\r\n", 13);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			write(fd, "Ingrese la tecla 'p' para aumentar la velocidad o la tecla 'l' para disminuirla.\r\n", 82);		
 			imprimir_retardo(0);
 			la_apilada();
 			break;
@@ -69,6 +73,7 @@ void modo_remoto()
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "La Carrera.\r\n", 13);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			write(fd, "Ingrese la tecla 'p' para aumentar la velocidad o la tecla 'l' para disminuirla.\r\n", 82);		
 			imprimir_retardo(0);
 			la_carrera();
 			break;
@@ -76,6 +81,7 @@ void modo_remoto()
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "Contador Binario.\r\n", 19);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			write(fd, "Ingrese la tecla 'p' para aumentar la velocidad o la tecla 'l' para disminuirla.\r\n", 82);		
 			imprimir_retardo(0);
 			contador_binario();
 			break;
@@ -83,6 +89,7 @@ void modo_remoto()
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "Expolosion.\r\n", 13);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			write(fd, "Ingrese la tecla 'p' para aumentar la velocidad o la tecla 'l' para disminuirla.\r\n", 82);		
 			imprimir_retardo(0);
 			explosion();
 			break;
@@ -90,6 +97,7 @@ void modo_remoto()
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "Random LED.\r\n", 13);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			write(fd, "Ingrese la tecla 'p' para aumentar la velocidad o la tecla 'l' para disminuirla.\r\n", 82);		
 			imprimir_retardo(0);
 			random_led();
 			break;
@@ -97,12 +105,12 @@ void modo_remoto()
 			write(fd, "Ingresaste al modo ", 19);
 			write(fd, "Feliz Cumpleanos.\r\n", 19);
 			write(fd, "Ingrese la tecla 's' para salir.\r\n", 34);
+			write(fd, "Ingrese la tecla 'p' para aumentar la velocidad o la tecla 'l' para disminuirla.\r\n", 82);		
 			imprimir_retardo(0);
 			feliz_cumple();
 			break;
 		default:
 			write(fd, "Saliste del modo remoto.\r\n\r\n", 28);
-			limpiar_serial();
 			elegir_modo = 1;	// si salimos del modo, queremos que nos vuelva a preguntar que modo queremos utilizar
 			close(fd);
 			modo();
@@ -161,9 +169,10 @@ int termset(int fd, int baudrate, struct termios *ttyold, struct termios *ttynew
 
 	ttynew -> c_lflag = 0;
 	ttynew -> c_oflag = 0;
-	ttynew -> c_cc[VMIN] = 0;			// setea número mínimo de carácteres a leer por la función read()
+	ttynew -> c_cc[VMIN] = 0;			// setea número mínimo de caracteres a leer por la función read()
 	ttynew -> c_cc[VTIME] = 100;			// setea el tiempo a esperar por información antes de volver de la función read()
-	
+
+	// carga los atributos
 	if(tcsetattr(fd, TCSANOW, ttynew) != 0)
 	{
 		printf(" ERROR : tcsetattr \n" );
@@ -187,9 +196,9 @@ void imprimir_retardo(int borrar)
 	if(borrar == 1)
 	{
 		// estos caracteres nos permiten limpiar la terminal serial
-		const char* limpiar_delay_anterior = "\033[2K";
-		const char* mover_cursor = "\033[1A";
-
+		const char * limpiar_delay_anterior = "\033[2K";
+		const char * mover_cursor = "\033[1A";
+		
 		write(fd, limpiar_delay_anterior, strlen(limpiar_delay_anterior));
 		tcdrain(fd);	// esta función espera hasta que se escribe toda la información
 		write(fd, mover_cursor, strlen(mover_cursor));
