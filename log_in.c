@@ -90,10 +90,10 @@ char * ingrese_contraseña(int tamaño_contraseña)
 {
         // setup de la terminal para utilizar modo no canónico
         struct termios t_old, t_new;
-        tcgetattr(FD_STDIN, &t_old); // lee atributos del teclado
+        tcgetattr(FD_STDIN, &t_old);		// lee atributos del teclado
         t_new = t_old;
-        t_new.c_lflag &= ~(ECHO | ICANON); // anula entrada canónica y eco
-        tcsetattr(FD_STDIN,TCSANOW,&t_new); // actualiza con los valores nuevos de la config. TCSANOW = activar la m>
+        t_new.c_lflag &= ~(ECHO | ICANON);	// anula entrada canónica y eco
+        tcsetattr(FD_STDIN,TCSANOW,&t_new);	// actualiza con los valores nuevos de la config. TCSANOW = activar la modificación inmediatamente
 
         // variables
 	static char contraseña[TAM_MAX_CONTRASEÑA] = {'\0'};      

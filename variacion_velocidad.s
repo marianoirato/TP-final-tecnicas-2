@@ -2,6 +2,9 @@
 .arm
 .global variacion_velocidad
 
+// R0 indica si aumentamos o disminuimos el delay
+// R1 es tiempo_retardo
+
 variacion_velocidad:
 
 	CMP R0,#2

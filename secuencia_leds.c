@@ -34,25 +34,12 @@ void retardo()
         }
 }
 
-void retardo_fijo()
-{
-        int tiempo_anterior, tiempo_actual;
-
-        // tomamos el tiempo actual, y actualizamos ambos valores
-        tiempo_actual = millis();
-        tiempo_anterior = tiempo_actual;
-
-        // esperamos 100 ms
-        while(tiempo_actual < tiempo_anterior + 100)
-                tiempo_actual = millis();
-}
-
 void auto_fantastico()
 {
         while(TRUE)
         {
                 // prendemos de izquierda a derecha
-                for(int i = 1; i < N_LEDS; i++) // arrancamos del 2do led, porque el 1ro queda prendido en el bucle siguiente
+                for(int i = 0; i < N_LEDS; i++) 
                 {
                         apagar_leds(TODOS);
 
@@ -61,7 +48,7 @@ void auto_fantastico()
                         retardo();
                 }
                 // prendemos de derecha a izquierda
-                for(int i = 6; i >= 0; i--)     // arrancamos del 7mo led, porque el 8vo ya esta prendido
+                for(int i = 6; i >= 1; i--)     // arrancamos del 7mo led, porque el 8vo ya esta prendido
                 {
                         apagar_leds(TODOS);
 

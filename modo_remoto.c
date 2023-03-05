@@ -22,8 +22,8 @@ void modo_remoto()
 	struct termios oldtty, newtty;
 
 	fd = open ("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NONBLOCK);
-
-        if(fd == -1)
+        
+	if(fd == -1)
         	printf("ERROR : no se pudo abrir el dispositivo.\n");
 
 	if(termset(fd , 9600, &oldtty, &newtty) == -1)
@@ -148,21 +148,21 @@ int termset(int fd, int baudrate, struct termios *ttyold, struct termios *ttynew
 	// copiamos los atributos en la nueva terminal
 	ttynew = ttyold;
 	// modificamos la nueva terminal
-	cfsetospeed(ttynew, baudrate);	// seteamos el baudrate del output
-	cfsetispeed(ttynew, baudrate);	// seteamos el baudrate del input
+	cfsetospeed(ttynew, baudrate);					// seteamos el baudrate del output
+	cfsetispeed(ttynew, baudrate);					// seteamos el baudrate del input
 	ttynew -> c_cflag = ( ttynew -> c_cflag & ~CSIZE ) | CS8 ;	// 8 data bits (8)
-	ttynew -> c_cflag &= ~( PARENB | PARODD );	// no parity (N)
-	ttynew -> c_cflag &= ~CSTOPB ;	// 1 stop bit (1)
+	ttynew -> c_cflag &= ~( PARENB | PARODD );			// sin paridad (N)
+	ttynew -> c_cflag &= ~CSTOPB ;					// 1 bit de parada (1)
 
-	ttynew -> c_cflag |= (CLOCAL | CREAD);          // ignore modem status lines , and
-	ttynew -> c_cflag &= ~CRTSCTS;                  // no flow control
-	ttynew -> c_iflag &= ~IGNBRK ;                  // disable break processing
+	ttynew -> c_cflag |= (CLOCAL | CREAD);          // ignoramos señales DTR y DSR
+	ttynew -> c_cflag &= ~CRTSCTS;                  // desactiva RTS/CTS
+	ttynew -> c_iflag &= ~IGNBRK ;                  // desactiva la señal de break, esta señal se utiliza para interrupciones momentaneas
 	ttynew -> c_iflag &= ~( IXON | IXOFF | IXANY ); // shut off xon / xoff ctrl
 
 	ttynew -> c_lflag = 0;
 	ttynew -> c_oflag = 0;
-	ttynew -> c_cc[VMIN] = 0;
-	ttynew -> c_cc[VTIME] = 100;
+	ttynew -> c_cc[VMIN] = 0;			// setea número mínimo de carácteres a leer por la función read()
+	ttynew -> c_cc[VTIME] = 100;			// setea el tiempo a esperar por información antes de volver de la función read()
 	
 	if(tcsetattr(fd, TCSANOW, ttynew) != 0)
 	{
@@ -191,7 +191,7 @@ void imprimir_retardo(int borrar)
 		const char* mover_cursor = "\033[1A";
 
 		write(fd, limpiar_delay_anterior, strlen(limpiar_delay_anterior));
-		retardo_fijo();
+		tcdrain(fd);	// esta función espera hasta que se escribe toda la información
 		write(fd, mover_cursor, strlen(mover_cursor));
 	}
 	
@@ -212,6 +212,6 @@ void limpiar_serial()
 	const char* mover_cursor = "\033[H";
 	
 	write(fd, mover_cursor, strlen(mover_cursor));
-	retardo_fijo();	// se pone un retardo porque se necesita que pase un tiempo entre limpiar la pantalla y mover el cursor
+	tcdrain(fd);	// esta función espera hasta que se escribe toda la información
 	write(fd, limpiar_pantalla, strlen(limpiar_pantalla));
 }
